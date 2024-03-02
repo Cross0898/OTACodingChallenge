@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { Box, Typography, Grid } from "@mui/material";
@@ -23,7 +23,6 @@ const CenteredBox = styled(Box)({
 const FileUploader = () => {
   const [zipFile, setZipFile] = useState(null);
   const [processedFiles, setProcessedFiles] = useState([]);
-  const [isPaused, setPaused] = useState(false);
   const [error, setError] = useState(null);
   const [progress, setProgress] = useState(0);
   const [showProgressBar, setShowProgressBar] = useState(false);
@@ -36,6 +35,9 @@ const FileUploader = () => {
   const [currentProcessedFile, setCurrentProcessedFile] = useState("");
   const [pauseButtonDisabled, setPauseButtonDisabled] = useState(true);
   const [continueButtonDisabled, setContinueButtonDisabled] = useState(true);
+  const [extractionComplete, setExtractionComplete] = useState(false);
+
+  const isPausedRef = useRef(false);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -94,8 +96,9 @@ const FileUploader = () => {
       setProgress(0);
 
       for (let index = 0; index < totalFiles; index++) {
-        if (isPaused) {
+        if (isPausedRef.current) {
           await new Promise((resolve) => setTimeout(resolve, 500));
+          index--;
           continue;
         }
 
@@ -119,6 +122,7 @@ const FileUploader = () => {
 
             if (index === totalFiles - 1) {
               setCurrentProcessedFile("");
+              setExtractionComplete(true);
               handleOpenToast(true, "Extract Successful", "success");
             }
           } catch (err) {
@@ -146,17 +150,16 @@ const FileUploader = () => {
   };
 
   const handlePause = () => {
-    setPaused(true);
+    isPausedRef.current = true;
     setPauseButtonDisabled(true);
     setContinueButtonDisabled(false);
   };
 
   const handleContinue = () => {
-    setPaused(false);
+    isPausedRef.current = false;
     setPauseButtonDisabled(false);
     setContinueButtonDisabled(true);
   };
-
   const handleShowProcessedFiles = () => {
     setShowProcessedFilesModal(true);
   };
@@ -194,6 +197,11 @@ const FileUploader = () => {
         handleDownload={handleDownload}
         showProgressBar={showProgressBar}
         progress={progress}
+        onPause={handlePause}
+        onContinue={handleContinue}
+        pauseButtonDisabled={pauseButtonDisabled}
+        continueButtonDisabled={continueButtonDisabled}
+        extractionComplete={extractionComplete}
       />
 
       <CustomSnackbar
