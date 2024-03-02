@@ -148,7 +148,23 @@ const FileUploader = () => {
       saveAs(blob, fileName);
     }
   };
+  const handleDownloadAll = () => {
+    if (processedFiles.length === 0) {
+      handleOpenToast(true, "No processed files to download.", "warning");
+      return;
+    }
 
+    const zip = new JSZip();
+
+    processedFiles.forEach((file) => {
+      const content = "Content of the specific file"; // Replace with the actual content of the file
+      zip.file(file.name, content);
+    });
+
+    zip.generateAsync({ type: "blob" }).then((blob) => {
+      saveAs(blob, "all_files.zip");
+    });
+  };
   const handlePause = () => {
     isPausedRef.current = true;
     setPauseButtonDisabled(true);
@@ -195,6 +211,7 @@ const FileUploader = () => {
         processedFiles={processedFiles}
         currentProcessedFile={currentProcessedFile}
         handleDownload={handleDownload}
+        handleDownloadAll={handleDownloadAll}
         showProgressBar={showProgressBar}
         progress={progress}
         onPause={handlePause}

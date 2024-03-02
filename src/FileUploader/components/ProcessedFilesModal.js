@@ -36,6 +36,7 @@ const ProcessedFilesModal = ({
   processedFiles,
   currentProcessedFile,
   handleDownload,
+  handleDownloadAll,
   showProgressBar,
   progress,
   pauseButtonDisabled,
@@ -157,7 +158,15 @@ const ProcessedFilesModal = ({
               >
                 {pauseButtonDisabled ? "Continue" : "Pause"}
               </Button>
-            ) : null}
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleDownloadAll}
+              >
+                Download All
+              </Button>
+            )}
           </Box>
         </Box>
       </Modal>
