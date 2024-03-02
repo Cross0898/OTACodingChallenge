@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Box, Typography, Input, Button } from "@mui/material";
 
-const UploadAndControlModal = ({
+const UploadAndUnzipModal = ({
   open,
   onClose,
   onFileChange,
@@ -35,7 +35,7 @@ const UploadAndControlModal = ({
         }}
       >
         <Typography id="upload-modal-title" variant="h6" component="h2">
-          Upload and Control
+          Upload and Unzip
         </Typography>
         <Input
           type="file"
@@ -73,4 +73,4 @@ const UploadAndControlModal = ({
   );
 };
 
-export default UploadAndControlModal;
+export default UploadAndUnzipModal;

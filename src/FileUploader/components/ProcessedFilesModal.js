@@ -15,7 +15,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import FileCopyIcon from "@mui/icons-material/FileCopy";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import CloseIcon from "@mui/icons-material/Close";
 
 const ProcessedFilesModal = ({
@@ -38,6 +38,16 @@ const ProcessedFilesModal = ({
       modalContentRef.current.scrollTop = modalContentRef.current.scrollHeight;
     }
   }, [currentProcessedFile]);
+
+  const formatFileSize = (size) => {
+    const units = ["B", "KB", "MB", "GB", "TB"];
+    let i = 0;
+    while (size >= 1024 && i < units.length - 1) {
+      size /= 1024;
+      i++;
+    }
+    return `${size.toFixed(2)}${units[i]}`;
+  };
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -84,10 +94,11 @@ const ProcessedFilesModal = ({
                 {processedFiles.map((file, index) => (
                   <TableRow key={index}>
                     <TableCell>
-                      <FileCopyIcon /> {file}
+                      <InsertDriveFileIcon /> {file.name} (
+                      {formatFileSize(file.size)})
                     </TableCell>
                     <TableCell>
-                      <Button onClick={() => handleDownload(file)}>
+                      <Button onClick={() => handleDownload(file.name)}>
                         Download
                       </Button>
                     </TableCell>

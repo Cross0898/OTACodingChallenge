@@ -6,7 +6,7 @@ import { styled } from "@mui/system";
 
 import ProcessedFilesModal from "./components/ProcessedFilesModal";
 import CustomSnackbar from "./components/CustomSnackbar";
-import UploadAndControlModal from "./components/UploadAndControlModal";
+import UploadAndUnzipModal from "./components/UploadAndUnzipModal";
 
 import dashboardArt from "../static/dashboardArt.PNG";
 
@@ -107,9 +107,12 @@ const FileUploader = () => {
         if (file) {
           try {
             const fileData = await file.async("blob");
-            console.log(fileData);
             const newFileName = `${filename}`;
-            setProcessedFiles((prevFiles) => [...prevFiles, newFileName]);
+            const fileSize = fileData.size;
+            setProcessedFiles((prevFiles) => [
+              ...prevFiles,
+              { name: newFileName, size: fileSize },
+            ]);
 
             const currentProgress = ((index + 1) / totalFiles) * 100;
             setProgress(currentProgress);
@@ -171,7 +174,7 @@ const FileUploader = () => {
 
   return (
     <React.Fragment>
-      <UploadAndControlModal
+      <UploadAndUnzipModal
         open={showUploadModal}
         onClose={handleToggleUploadModal}
         onFileChange={handleFileChange}
